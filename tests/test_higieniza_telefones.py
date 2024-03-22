@@ -17,4 +17,4 @@ def test_adiciona_telefone_limpo():
 
 
 def test_higieniza_telefone():
-    higieniza_telefones.higieniza_telefone('tests/dados/arquivo_de_teste.csv')
+    higieniza_telefones.higieniza_telefone('tests/dados_teste/arquivo_de_teste.csv')
