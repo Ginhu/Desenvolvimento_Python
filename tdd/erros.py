@@ -14,3 +14,7 @@ class TokenInvalido(TddErro):
 
 class ImpossivelVerificarTimeout(TddErro):
     ...
+
+
+class JwtExpirado(TddErro):
+    ...

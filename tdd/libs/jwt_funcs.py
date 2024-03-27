@@ -2,7 +2,7 @@ from datetime import datetime
 import jwt
 from jwt import InvalidSignatureError
 
-from tdd.erros import TokenInvalido, ImpossivelVerificarTimeout
+from tdd.erros import TokenInvalido, ImpossivelVerificarTimeout, JwtExpirado
 
 key = 'key'
 
@@ -28,4 +28,10 @@ def descriptografa_jwt(token: str, expira_em: int = 0) -> dict:
     elif expira_em > 0 and ('criado_em' not in descript_jwt.keys()):
         raise ImpossivelVerificarTimeout('Não é possível verificar timeout')
     else:
-        pass
+        datetime_agora = datetime.now().astimezone()
+        criado_em = datetime.fromisoformat(descript_jwt['criado_em'])
+
+        if (datetime_agora - criado_em).seconds < expira_em:
+            return descript_jwt
+        else:
+            raise JwtExpirado('Tempo de uso do link expirado, favor gerar um novo')

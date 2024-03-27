@@ -30,12 +30,19 @@ def test_gera_jwt_com_dh(meu_dict):
     assert dict_jwt_descript == {'nome': 'Sergio', 'idade': 37}
 
 
-def test_descriptografa_jwt_expira_default(meu_dict):
+def test_descriptografa_jwt_expira_em_default(meu_dict):
     token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21lIjoiU2VyZ2lvIiwiaWRhZGUiOjM3fQ.'\
         'JLCj4hpHaxDMmFoI8BqXtV69PhoELkAKmXoDJPXApFQ'
     retorno_jwt_descript = descriptografa_jwt(token)
     assert retorno_jwt_descript == {'nome': 'Sergio', 'idade': 37}
 
 
-def test_descriptografa_jwt_expira_60(meu_dict):
-    pass
+def test_descriptografa_jwt_expira_em_60(meu_dict):
+    timeout = 60
+    token = gera_jwt(meu_dict, True)
+    retorno = descriptografa_jwt(token, timeout)
+    assert 'criado_em' in retorno.keys()
+
+    datetime_atual = datetime.now().astimezone()
+    criado_em = datetime.fromisoformat(retorno['criado_em'])
+    assert (datetime_atual - criado_em).seconds < timeout
