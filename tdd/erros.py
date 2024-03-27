@@ -6,3 +6,11 @@ class TddErro(Exception):
 
 class NaoEncontrado(TddErro):
     ...
+
+
+class TokenInvalido(TddErro):
+    ...
+
+
+class ImpossivelVerificarTimeout(TddErro):
+    ...
