@@ -33,6 +33,7 @@ def test_gera_jwt_com_dh(meu_dict):
 
 
 def test_descriptografa_jwt_expira_em_default():
+    """Teste de descriptogra JWT sem passar o parâmetro expira_em"""
     token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21lIjoiU2VyZ2lvIiwiaWRhZGUiOjM3fQ.'\
         'JLCj4hpHaxDMmFoI8BqXtV69PhoELkAKmXoDJPXApFQ'
     retorno_jwt_descript = descriptografa_jwt(token)
@@ -40,6 +41,7 @@ def test_descriptografa_jwt_expira_em_default():
 
 
 def test_descriptografa_jwt_raise_TokenInvalido():
+    """Teste de descriptografar JWT enviando token inválido"""
     token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21lIjoiU2VyZ2lvIiwiaWRhZGUiOjM3fQ.'\
         'JLCj4hpHaxDMmFoI8BqXtV69PhoELkAKmXoDJPXApFQt'
     with pytest.raises(TokenInvalido) as exinfo:
@@ -48,6 +50,7 @@ def test_descriptografa_jwt_raise_TokenInvalido():
 
 
 def test_descriptografa_jwt_raise_ImpossivelVerificarTimeout():
+    """Teste de descriptografar JWT sem possibilidade de verificar timeout"""
     token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21lIjoiU2VyZ2lvIiwiaWRhZGUiOjM3fQ.'\
         'JLCj4hpHaxDMmFoI8BqXtV69PhoELkAKmXoDJPXApFQ'
     with pytest.raises(ImpossivelVerificarTimeout) as exinfo:
@@ -56,6 +59,7 @@ def test_descriptografa_jwt_raise_ImpossivelVerificarTimeout():
 
 
 def test_descriptografa_jwt_raise_JwtExpirado():
+    """Teste de descriptografar JWT com token expirado"""
     dicionario = {'nome': 'Sergio', 'idade': 37, 'criado_em': '2024-03-27T23:59:59.000010-03:00'}
     token = gera_jwt(dicionario)
     with pytest.raises(JwtExpirado) as exinfo:
@@ -64,6 +68,7 @@ def test_descriptografa_jwt_raise_JwtExpirado():
 
 
 def test_descriptografa_jwt_expira_em_60(meu_dict):
+    """Teste de descriptografar JWT passando o paramêtro de expira_em = 60 segundos"""
     timeout = 60
     token = gera_jwt(meu_dict, True)
     retorno = descriptografa_jwt(token, timeout)
