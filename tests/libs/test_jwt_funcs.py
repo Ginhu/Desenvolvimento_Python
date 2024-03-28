@@ -41,6 +41,7 @@ def test_descriptografa_jwt_expira_em_60(meu_dict):
     timeout = 60
     token = gera_jwt(meu_dict, True)
     retorno = descriptografa_jwt(token, timeout)
+    del meu_dict['criado_em']
     assert 'criado_em' in retorno.keys()
 
     datetime_atual = datetime.now().astimezone()

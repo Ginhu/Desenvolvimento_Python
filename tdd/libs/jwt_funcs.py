@@ -11,10 +11,9 @@ def gera_jwt(dados: dict, dh: bool = False) -> str:
     if dh is False:
         token = jwt.encode(dados, key, algorithm='HS256')
         return token
-    else:
-        dados['criado_em'] = datetime.now().astimezone().isoformat()
-        token = jwt.encode(dados, key, algorithm='HS256')
-        return token
+    dados['criado_em'] = datetime.now().astimezone().isoformat()
+    token = jwt.encode(dados, key, algorithm='HS256')
+    return token
 
 
 def descriptografa_jwt(token: str, expira_em: int = 0) -> dict:
@@ -27,11 +26,10 @@ def descriptografa_jwt(token: str, expira_em: int = 0) -> dict:
         return descript_jwt
     elif expira_em > 0 and ('criado_em' not in descript_jwt.keys()):
         raise ImpossivelVerificarTimeout('Não é possível verificar timeout')
-    else:
-        datetime_agora = datetime.now().astimezone()
-        criado_em = datetime.fromisoformat(descript_jwt['criado_em'])
 
-        if (datetime_agora - criado_em).seconds < expira_em:
-            return descript_jwt
-        else:
-            raise JwtExpirado('Tempo de uso do link expirado, favor gerar um novo')
+    datetime_agora = datetime.now().astimezone()
+    criado_em = datetime.fromisoformat(descript_jwt['criado_em'])
+
+    if (datetime_agora - criado_em).seconds < expira_em:
+        return descript_jwt
+    raise JwtExpirado('Tempo de uso do link expirado, favor gerar um novo')
