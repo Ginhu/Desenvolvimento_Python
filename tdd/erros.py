@@ -6,3 +6,15 @@ class TddErro(Exception):
 
 class NaoEncontrado(TddErro):
     ...
+
+
+class TokenFornecidoInvalido(TddErro):
+    ...
+
+
+class ImpossivelVerificarTimeout(TddErro):
+    ...
+
+
+class JwtExpirado(TddErro):
+    ...
