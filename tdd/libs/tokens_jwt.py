@@ -1,13 +1,12 @@
-from datetime import datetime
 import jwt
 from jwt import InvalidSignatureError
+from datetime import datetime, timedelta
 
-from tdd.erros import TokenInvalido, ImpossivelVerificarTimeout, JwtExpirado
+from tdd.erros import TokenFornecidoInvalido, ImpossivelVerificarTimeout, JwtExpirado
+from tdd.libs import config
 
-key = 'key'
 
-
-def gera_jwt(dados: dict, dh=False, chave=key) -> str:
+def gera_jwt(dados: dict, dh=False, chave=config.chave_JWT) -> str:
     dicionario = dict(dados)
     if dh:
         dicionario['criado_em'] = datetime.now().astimezone().isoformat()
@@ -16,11 +15,11 @@ def gera_jwt(dados: dict, dh=False, chave=key) -> str:
     return token
 
 
-def descriptografa_jwt(token: str, expira_em=0, chave=key) -> dict:
+def descriptografa_jwt(token: str, expira_em=0, chave=config.chave_JWT) -> dict:
     try:
         descript_jwt = jwt.decode(token, chave, algorithms='HS256')
     except InvalidSignatureError:
-        raise TokenInvalido('Token fornecido não é válido')
+        raise TokenFornecidoInvalido('Token fornecido não é válido')
 
     if expira_em <= 0:
         return descript_jwt
@@ -31,7 +30,7 @@ def descriptografa_jwt(token: str, expira_em=0, chave=key) -> dict:
     datetime_agora = datetime.now().astimezone()
     criado_em = datetime.fromisoformat(descript_jwt['criado_em'])
 
-    if (datetime_agora - criado_em).seconds + 1 < expira_em:
+    if (datetime_agora - criado_em) < timedelta(seconds=expira_em):
         return descript_jwt
 
-    raise JwtExpirado('Tempo de uso do link expirado, favor gerar um novo')
+    raise JwtExpirado('Tempo de uso do token expirou')

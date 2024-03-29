@@ -10,8 +10,9 @@ def test_le_arquivo_csv():
 
 
 def test_gera_novo_nome_arquivo():
-    nome_arquivo_teste = 'tests/dados_teste/arquivo_de_teste.csv'
-    retorno_esperado = 'tests/dados_teste/novos_dados/novo_arquivo_de_teste.csv'
+    caminho_relativo = 'tests/dados_teste/'
+    nome_arquivo_teste = f'{caminho_relativo}arquivo_de_teste.csv'
+    retorno_esperado = f'{caminho_relativo}novos_dados/novo_arquivo_de_teste.csv'
 
     nome_gerado = gera_novo_nome_arquivo(nome_arquivo_teste)
     assert retorno_esperado == nome_gerado
@@ -21,10 +22,9 @@ def test_gera_novo_arquivo():
     dados_de_teste = [{
         'Telefones': '(11) 9876543210',
         'fone_limpo': '119876543210'}]
-
-    gera_novo_arquivo(
-        'tests/dados_teste/arquivo_gerar_novo_arquivo.csv', dados_de_teste)
+    caminho_relativo = 'tests/dados_teste/'
+    gera_novo_arquivo(f'{caminho_relativo}arquivo_gerar_novo_arquivo.csv', dados_de_teste)
     lista_dados_arquivo_gerado = le_arquivo_csv(
-        'tests/dados_teste/novos_dados/novo_arquivo_gerar_novo_arquivo.csv')
+        f'{caminho_relativo}novos_dados/novo_arquivo_gerar_novo_arquivo.csv')
 
     assert dados_de_teste == lista_dados_arquivo_gerado

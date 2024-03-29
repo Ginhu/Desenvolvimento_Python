@@ -2,5 +2,5 @@ import pytest
 
 
 @pytest.fixture
-def meu_dict():
+def dados_jwt():
     return {'nome': 'Sergio', 'idade': 37}

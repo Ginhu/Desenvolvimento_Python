@@ -8,7 +8,7 @@ class NaoEncontrado(TddErro):
     ...
 
 
-class TokenInvalido(TddErro):
+class TokenFornecidoInvalido(TddErro):
     ...
 
 
