@@ -16,7 +16,7 @@ CORS(app)
 def carrega_csv_mongodb():
     collection = conecta_mongo_db('mongodb://localhost:27023/', 'teste_csv_2', 'teste_3')
 
-    conteudo_arquivo = le_arquivo_csv('tests/dados_teste/teste_mongo1.csv', ',')
+    conteudo_arquivo = le_arquivo_csv('tests/dados_teste/teste-semi.csv', ',')
     conteudo_arquivo_corrigido = valida_e_corrige_valores_por_linha(conteudo_arquivo)
 
     collection.drop()
