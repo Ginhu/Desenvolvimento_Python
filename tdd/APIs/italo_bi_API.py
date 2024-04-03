@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from bson import json_util
 
@@ -20,7 +20,11 @@ def carrega_csv_mongodb():
     conteudo_arquivo_corrigido = valida_e_corrige_valores_por_linha(conteudo_arquivo)
 
     collection.drop()
-    return collection.insert_many(conteudo_arquivo_corrigido)
+    collection.insert_many(conteudo_arquivo_corrigido)
+    response = {
+        'message': 'arquivo carregado no banco de dados'
+    }
+    return jsonify(response), 200
 
 
 @app.route('/consultar', methods=['GET'])
