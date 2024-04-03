@@ -5,10 +5,10 @@ from pathlib import Path
 from tdd.erros import NaoEncontrado
 
 
-def le_arquivo_csv(nome_arquivo: str) -> list[dict]:
+def le_arquivo_csv(nome_arquivo: str, separador: str = ';') -> list[dict]:
     try:
         with open(nome_arquivo, 'r', encoding='ISO-8859-1') as arquivo_aberto:
-            conteudo_csv = list(csv.DictReader(arquivo_aberto, delimiter=';'))
+            conteudo_csv = list(csv.DictReader(arquivo_aberto, delimiter=separador))
     except FileNotFoundError:
         raise NaoEncontrado(f'Arquivo não encontrado: {nome_arquivo}')
 
@@ -39,3 +39,6 @@ def gera_novo_arquivo(nome_arquivo: str, data: list[dict]):
 
     except FileExistsError:
         raise NaoEncontrado(f'Arquivo não encontrado: {nome_arquivo_novo}')
+
+
+print(le_arquivo_csv('dados/Series-Acumuladas-SEMI.csv'))
