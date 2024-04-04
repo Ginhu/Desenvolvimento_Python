@@ -14,7 +14,7 @@ CORS(app)
 
 @app.route('/carregar', methods=['POST'])
 def carrega_csv_mongodb():
-    collection = conecta_mongo_db('mongodb://localhost:27023/', 'teste_csv_2', 'teste_3')
+    collection = conecta_mongo_db('mongodb://localhost:27017/', 'teste_csv_2', 'teste_3')
 
     conteudo_arquivo = le_arquivo_csv('tests/dados_teste/teste-semi.csv', ',')
     conteudo_arquivo_corrigido = valida_e_corrige_valores_por_linha(conteudo_arquivo)
@@ -29,7 +29,7 @@ def carrega_csv_mongodb():
 
 @app.route('/consultar', methods=['GET'])
 def consulta_db():
-    collection = conecta_mongo_db('mongodb://localhost:27023/', 'teste_csv_2', 'teste_3')
+    collection = conecta_mongo_db('mongodb://localhost:27017/', 'teste_csv_2', 'teste_3')
     consulta = collection.find()
 
     return json.loads(json_util.dumps(consulta)), 200

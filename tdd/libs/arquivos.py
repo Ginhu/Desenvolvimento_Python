@@ -39,6 +39,3 @@ def gera_novo_arquivo(nome_arquivo: str, data: list[dict]):
 
     except FileExistsError:
         raise NaoEncontrado(f'Arquivo não encontrado: {nome_arquivo_novo}')
-
-
-print(le_arquivo_csv('dados/Series-Acumuladas-SEMI.csv'))

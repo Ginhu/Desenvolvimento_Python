@@ -16,22 +16,25 @@ def valida_e_corrige_valores_por_linha(lista: list[dict]):
     for i in range(len(lista)):
         if '' in lista[i].values():
             print(lista[i])
-        lista[i] = {k: transforma_inteiro_ou_zero(v) for k, v in lista[i].items()}
+        lista[i] = {k: transforma_em_inteiro_ou_zero(v) for k, v in lista[i].items()}
 
     return lista
 
 
-def transforma_inteiro_ou_zero(valor):
-    if valor == '':
-        return 0
-    return int(valor)
+def transforma_em_inteiro_ou_zero(valor):
+    try:
+        valor = int(valor)
+    except ValueError:
+        valor = 0
+        pass
+    return valor
 
 
 def consulta_db(caminho_mongo: str, nome_db: str, nome_collection: str):
     collection = conecta_mongo_db(caminho_mongo, nome_db, nome_collection)
     consulta = collection.find()
 
-    return consulta
+    return list(consulta)
 
 
 if __name__ == '__main__':
