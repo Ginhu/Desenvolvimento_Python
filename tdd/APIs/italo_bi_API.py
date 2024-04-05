@@ -6,7 +6,7 @@ from bson import json_util
 
 from tdd.libs.conecta_db import conecta_mongo_db
 from tdd.libs.arquivos import le_arquivo_csv
-from tdd.scripts.carrega_csv_db import valida_e_corrige_valores_por_linha
+from tdd.scripts.carrega_arquivo_db import valida_e_corrige_valores_por_linha
 
 app = Flask(__name__)
 CORS(app)

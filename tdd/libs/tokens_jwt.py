@@ -3,7 +3,7 @@ from jwt import InvalidSignatureError
 from datetime import datetime, timedelta
 
 from tdd.erros import TokenFornecidoInvalido, ImpossivelVerificarTimeout, JwtExpirado
-from tdd.libs import config
+from tdd import config
 
 
 def gera_jwt(dados: dict, dh=False, chave=config.chave_JWT) -> str:

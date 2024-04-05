@@ -1,4 +1,7 @@
-from tdd.libs.arquivos import gera_novo_arquivo, gera_novo_nome_arquivo, le_arquivo_csv
+from tdd.libs.arquivos import (gera_novo_arquivo,
+                               gera_novo_nome_arquivo,
+                               le_arquivo_csv,
+                               le_arquivo_xls)
 
 
 def test_le_arquivo_csv():
@@ -28,3 +31,9 @@ def test_gera_novo_arquivo():
         f'{caminho_relativo}novos_dados/novo_arquivo_gerar_novo_arquivo.csv')
 
     assert dados_de_teste == lista_dados_arquivo_gerado
+
+
+def test_le_arquivo_xls():
+    conteudo_xls = le_arquivo_xls('tests/dados_teste/Series Acumuladas1.xlsx')
+    assert conteudo_xls.sheet_names == ['ACUM', 'REMA', 'INGR', 'CAPT', 'EVAS', 'SEMI', 'EADC',
+                                        'EAD2', 'PRES', 'TESTE', 'Notas']

@@ -1,6 +1,7 @@
 import csv
 
 from pathlib import Path
+import pandas as pd
 
 from tdd.erros import NaoEncontrado
 
@@ -39,3 +40,17 @@ def gera_novo_arquivo(nome_arquivo: str, data: list[dict]):
 
     except FileExistsError:
         raise NaoEncontrado(f'Arquivo não encontrado: {nome_arquivo_novo}')
+
+
+def le_arquivo_xls(nome_arquivo: str):
+    try:
+        planilha = pd.ExcelFile('dados/Series Acumuladas1.xlsx')
+    except FileNotFoundError:
+        raise NaoEncontrado(f'Arquivo não encontrado: {nome_arquivo}')
+    return planilha
+
+
+# def le_arquivo_xlsx():
+#     planilha = pd.ExcelFile('dados/Series Acumuladas1.xlsx').sheet_names
+
+#     print(pd.read_excel('dados/Series Acumuladas1.xlsx', planilha[9]).to_dict('records'))
