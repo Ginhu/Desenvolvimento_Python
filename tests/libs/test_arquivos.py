@@ -1,4 +1,7 @@
-from tdd.libs.arquivos import gera_novo_arquivo, gera_novo_nome_arquivo, le_arquivo_csv
+from tdd.libs.arquivos import (gera_novo_arquivo,
+                               gera_novo_nome_arquivo,
+                               le_arquivo_csv,
+                               le_arquivo_xls)
 
 
 def test_le_arquivo_csv():
@@ -10,8 +13,9 @@ def test_le_arquivo_csv():
 
 
 def test_gera_novo_nome_arquivo():
-    nome_arquivo_teste = 'tests/dados/teste.csv'
-    retorno_esperado = 'tests/dados_teste/novos_dados/novo_teste.csv'
+    caminho_relativo = 'tests/dados_teste/'
+    nome_arquivo_teste = f'{caminho_relativo}arquivo_de_teste.csv'
+    retorno_esperado = f'{caminho_relativo}novos_dados/novo_arquivo_de_teste.csv'
 
     nome_gerado = gera_novo_nome_arquivo(nome_arquivo_teste)
     assert retorno_esperado == nome_gerado
@@ -21,10 +25,15 @@ def test_gera_novo_arquivo():
     dados_de_teste = [{
         'Telefones': '(11) 9876543210',
         'fone_limpo': '119876543210'}]
-
-    gera_novo_arquivo(
-        'tests/dados/arquivo_gerar_novo_arquivo.csv', dados_de_teste)
+    caminho_relativo = 'tests/dados_teste/'
+    gera_novo_arquivo(f'{caminho_relativo}arquivo_gerar_novo_arquivo.csv', dados_de_teste)
     lista_dados_arquivo_gerado = le_arquivo_csv(
-        'tests/dados_teste/novos_dados/novo_arquivo_gerar_novo_arquivo.csv')
+        f'{caminho_relativo}novos_dados/novo_arquivo_gerar_novo_arquivo.csv')
 
     assert dados_de_teste == lista_dados_arquivo_gerado
+
+
+def test_le_arquivo_xls():
+    conteudo_xls = le_arquivo_xls('tests/dados_teste/Series Acumuladas1.xlsx')
+    assert conteudo_xls.sheet_names == ['ACUM', 'REMA', 'INGR', 'CAPT', 'EVAS', 'SEMI', 'EADC',
+                                        'EAD2', 'PRES', 'TESTE', 'Notas']

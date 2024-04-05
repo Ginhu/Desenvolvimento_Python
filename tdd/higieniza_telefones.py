@@ -10,7 +10,7 @@ from tdd.libs.strings import retorna_somente_numeros
 
 # 1.Fazer tudo funcionar sem testes
 # 2.Criar teste para as funcionalidades desenvolvidas
-CAMINHO_ARQUIVO = 'tests'
+CAMINHO_ARQUIVO = 'tdd'
 
 
 def adiciona_telefone_limpo(dado: dict) -> dict:
@@ -28,5 +28,5 @@ def higieniza_telefone(nome_arquivo: str):
 
 
 if __name__ == '__main__':
-    nome_arquivo = 'dados/BaseRematricula-2024-02.csv'
+    nome_arquivo = 'dados/Series-Acumuladas-SEMI.csv'
     higieniza_telefone(nome_arquivo)
