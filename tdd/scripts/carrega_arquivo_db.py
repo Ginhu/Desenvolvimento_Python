@@ -5,7 +5,7 @@ from tdd import config
 
 
 def carrega_csv_mongodb(nome_arquivo: str, nome_db: str, nome_collection: str,
-                        caminho_mongo: str = config.mongoDb):
+                        caminho_mongo: str = config.mongo_db):
     collection = conecta_mongo_db(caminho_mongo, nome_db, nome_collection)
 
     conteudo_arquivo = le_arquivo_csv(nome_arquivo, ',')
@@ -33,14 +33,14 @@ def transforma_em_inteiro_ou_zero(valor):
     return valor
 
 
-def consulta_db(nome_db: str, nome_collection: str, caminho_mongo: str = config.mongoDb):
+def consulta_db(nome_db: str, nome_collection: str, caminho_mongo: str = config.mongo_db):
     collection = conecta_mongo_db(caminho_mongo, nome_db, nome_collection)
     consulta = collection.find()
 
     return list(consulta)
 
 
-def carrega_xls_mongo(nome_arquivo: str, nome_db: str, caminho_mongo: str = config.mongoDb):
+def carrega_xls_mongo(nome_arquivo: str, nome_db: str, caminho_mongo: str = config.mongo_db):
 
     conteudo_excel = le_arquivo_xls(nome_arquivo)
     nome_planilhas = conteudo_excel.sheet_names

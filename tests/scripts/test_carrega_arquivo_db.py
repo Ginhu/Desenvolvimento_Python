@@ -21,5 +21,5 @@ def test_transforma_em_inteiro_ou_zero():
 
 
 def test_carrega_xls_mongo():
-    carrega_xls_mongo('dados/Series Acumuladas1.xlsx', 'db_teste_xls')
+    carrega_xls_mongo('dados/Series Acumuladas1.xlsx', 'italo_bi')
     assert True
