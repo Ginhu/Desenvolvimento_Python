@@ -5,27 +5,32 @@ from flask_cors import CORS
 from bson import json_util
 
 from tdd import config
-from tdd.libs.conecta_db import conecta_mongo_db
-from tdd.libs.arquivos import le_arquivo_csv
-from tdd.scripts.carrega_arquivo_db import valida_e_corrige_valores_por_linha
+from tdd.scripts.carrega_arquivo_db import consulta_db_mongo, carrega_xls_mongo
 
 app = Flask(__name__)
 CORS(app)
 
 
-@app.route('/carregar', methods=['POST'])
-def carrega_csv_mongodb():
-    collection = conecta_mongo_db('mongodb://localhost:27017/', 'teste_csv_2', 'teste_3')
+@app.route('/carregar/arquivo', methods=['POST'])
+def carrega_xls_mongodb():
+    str_token = request.headers.get('Authorization')
+    if not str_token:
+        return jsonify({'msg': 'Acesso negado'}), 403
 
-    conteudo_arquivo = le_arquivo_csv('tests/dados_teste/teste-semi.csv', ',')
-    conteudo_arquivo_corrigido = valida_e_corrige_valores_por_linha(conteudo_arquivo)
+    token = str_token.split(' ')[1]
+    if token != config.token_acesso:
+        return jsonify({'msg': 'Acesso negado'}), 403
 
-    collection.drop()
-    collection.insert_many(conteudo_arquivo_corrigido)
-    response = {
-        'message': 'arquivo carregado no banco de dados'
-    }
-    return jsonify(response), 200
+    body = request.json
+
+    if not body['arquivo']:
+        return jsonify({'msg': 'Campo arquivo é necessário para requisição'}), 400
+    retorno = carrega_xls_mongo(body['arquivo'], 'teste_API')
+
+    if 'Erro no formato do cabeçalho' or 'Erro encontrado: valores da tabela' in retorno.values():
+        return jsonify({'msg': 'Problema ao adicionar planilhas', 'relatorio': retorno}), 422
+
+    return jsonify({'msg': 'Planilhas adicionadas com sucesso!', 'relatorio': retorno}), 201
 
 
 @app.route('/consultas/tabela/<tabela>', methods=['GET'])
@@ -38,8 +43,9 @@ def consulta_db(tabela):
     if token != config.token_acesso:
         return jsonify({'msg': 'Acesso negado'}), 403
 
-    collection = conecta_mongo_db(config.mongo_db, config.banco, tabela)
-    consulta = list(collection.find(projection={'_id': False}))
+    # collection = conecta_mongo_db(config.mongo_local, config.banco, tabela)
+    # consulta = list(collection.find(projection={'_id': False}))
+    consulta = consulta_db_mongo(config.banco, tabela)
 
     if not consulta:
         return jsonify({'msg': 'Tabela não encontrada'}), 400

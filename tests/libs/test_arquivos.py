@@ -34,6 +34,6 @@ def test_gera_novo_arquivo():
 
 
 def test_le_arquivo_xls():
-    conteudo_xls = le_arquivo_xls('tests/dados_teste/Series Acumuladas1.xlsx')
+    conteudo_xls = le_arquivo_xls('tests/dados_teste/Series Acumuladas.xlsx')
     assert conteudo_xls.sheet_names == ['ACUM', 'REMA', 'INGR', 'CAPT', 'EVAS', 'SEMI', 'EADC',
-                                        'EAD2', 'PRES', 'TESTE', 'Notas']
+                                        'EAD2', 'PRES', 'Notas']

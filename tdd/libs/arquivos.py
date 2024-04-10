@@ -44,7 +44,7 @@ def gera_novo_arquivo(nome_arquivo: str, data: list[dict]):
 
 def le_arquivo_xls(nome_arquivo: str):
     try:
-        planilha = pd.ExcelFile('dados/Series Acumuladas1.xlsx')
+        planilha = pd.ExcelFile(nome_arquivo)
     except FileNotFoundError:
         raise NaoEncontrado(f'Arquivo não encontrado: {nome_arquivo}')
     return planilha
