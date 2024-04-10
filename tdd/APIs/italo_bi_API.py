@@ -23,12 +23,13 @@ def carrega_xls_mongodb():
 
     body = request.json
 
-    if not body['arquivo']:
+    if 'arquivo' not in list(body.keys()) or not body['arquivo']:
         return jsonify({'msg': 'Campo arquivo é necessário para requisição'}), 400
+
     retorno = carrega_xls_mongo(body['arquivo'], 'teste_API')
 
-    if 'Erro no formato do cabeçalho' or 'Erro encontrado: valores da tabela' in retorno.values():
-        return jsonify({'msg': 'Problema ao adicionar planilhas', 'relatorio': retorno}), 422
+    if 'Erro no formato do cabeçalho' in retorno.values() or 'Erro encontrado: valores da tabela' in retorno.values():
+        return jsonify({'msg': 'Problema ao adicionar planilha(s)', 'relatorio': retorno}), 422
 
     return jsonify({'msg': 'Planilhas adicionadas com sucesso!', 'relatorio': retorno}), 201
 
@@ -45,7 +46,7 @@ def consulta_db(tabela):
 
     # collection = conecta_mongo_db(config.mongo_local, config.banco, tabela)
     # consulta = list(collection.find(projection={'_id': False}))
-    consulta = consulta_db_mongo(config.banco, tabela)
+    consulta = consulta_db_mongo('banco_teste', tabela)
 
     if not consulta:
         return jsonify({'msg': 'Tabela não encontrada'}), 400
