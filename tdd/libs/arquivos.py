@@ -1,7 +1,9 @@
 import csv
+import os
 
 from pathlib import Path
 import pandas as pd
+from werkzeug.utils import secure_filename
 
 from tdd.erros import NaoEncontrado
 
@@ -50,6 +52,10 @@ def le_arquivo_xls(nome_arquivo: str):
     return planilha
 
 
+def faz_upload_arquivo(arquivo, caminho):
+    nome_arquivo = os.path.join(caminho, secure_filename(arquivo.filename))
+    arquivo.save(nome_arquivo)
+    return nome_arquivo
 # def le_arquivo_xlsx():
 #     planilha = pd.ExcelFile('dados/Series Acumuladas1.xlsx').sheet_names
 

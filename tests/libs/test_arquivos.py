@@ -1,7 +1,8 @@
 from tdd.libs.arquivos import (gera_novo_arquivo,
                                gera_novo_nome_arquivo,
                                le_arquivo_csv,
-                               le_arquivo_xls)
+                               le_arquivo_xls,
+                               faz_upload_arquivo)
 
 
 def test_le_arquivo_csv():
@@ -37,3 +38,16 @@ def test_le_arquivo_xls():
     conteudo_xls = le_arquivo_xls('tests/dados_teste/Series Acumuladas.xlsx')
     assert conteudo_xls.sheet_names == ['ACUM', 'REMA', 'INGR', 'CAPT', 'EVAS', 'SEMI', 'EADC',
                                         'EAD2', 'PRES', 'Notas']
+
+
+# def test_salva_arquivo_upload():
+#     class Arquivo():
+#         def save():
+#             return True
+
+#         def filename():
+#             return 'Series Acumuladas.xlsx'
+#     faz_upload_arquivo(Arquivo, 'upload')
+#     assert le_arquivo_xls(
+#         'upload/Series Acumuladas.xlsx').sheet_names == ['ACUM', 'REMA', 'INGR', 'CAPT', 'EVAS',
+#                                                          'SEMI', 'EADC', 'EAD2', 'PRES', 'Notas']

@@ -1,6 +1,15 @@
 from pydantic import BaseModel, Field, ConfigDict, RootModel
 
 
+class ExemploInt(BaseModel):
+    nome: str
+    valor: int | None = None
+
+
+class DadosExemplo(list[ExemploInt]):
+    ...
+
+
 class DadosPorSemestre(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
     dias: int | None = Field(default=None, alias='Dias')

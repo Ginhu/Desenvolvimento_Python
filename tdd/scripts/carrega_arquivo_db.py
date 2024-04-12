@@ -8,7 +8,7 @@ from tdd import config
 
 
 def carrega_csv_mongodb(nome_arquivo: str, nome_db: str, nome_collection: str,
-                        caminho_mongo: str = config.mongo_db):
+                        caminho_mongo: str = config.mongo_local):
     collection = conecta_mongo_db(nome_db, nome_collection, caminho_mongo)
 
     conteudo_arquivo = le_arquivo_csv(nome_arquivo, ',')
@@ -36,37 +36,28 @@ def transforma_em_inteiro_ou_zero(valor):
     return valor
 
 
+mapa_planilha_classe = {
+    'SEMI': campos_italo_bi.DadosSemi,
+    'EADC': campos_italo_bi.DadosEadc,
+    'EAD2': campos_italo_bi.DadosEad2,
+    'PRES': campos_italo_bi.DadosPres,
+    'ACUM': campos_italo_bi.DadosPorSemestre,
+    'REMA': campos_italo_bi.DadosPorSemestre,
+    'INGR': campos_italo_bi.DadosPorSemestre,
+    'CAPT': campos_italo_bi.DadosPorSemestre,
+    'EVAS': campos_italo_bi.DadosPorSemestre
+}
+
+
 def converte_cabecalho(
         lista: list[dict], nome_planilha: str, formato_json: bool = False) -> list[dict]:
-    if nome_planilha == 'SEMI':
-        for i in range(len(lista)):
-            dados = campos_italo_bi.DadosSemi(**lista[i])
-            lista[i] = dados.model_dump(by_alias=formato_json)
-        return lista
 
-    if nome_planilha == 'EADC':
-        for i in range(len(lista)):
-            dados = campos_italo_bi.DadosEadc(**lista[i])
-            lista[i] = dados.model_dump(by_alias=formato_json)
-        return lista
+    ret = []
 
-    if nome_planilha == 'EAD2':
-        for i in range(len(lista)):
-            dados = campos_italo_bi.DadosEad2(**lista[i])
-            lista[i] = dados.model_dump(by_alias=formato_json)
-        return lista
-
-    if nome_planilha == 'PRES':
-        for i in range(len(lista)):
-            dados = campos_italo_bi.DadosPres(**lista[i])
-            lista[i] = dados.model_dump(by_alias=formato_json)
-        return lista
-
-    for i in range(len(lista)):
-        dados = campos_italo_bi.DadosPorSemestre(**lista[i])
-        lista[i] = dados.model_dump(by_alias=formato_json)
-
-    return lista
+    for i in lista:
+        dados = mapa_planilha_classe[nome_planilha](**i)
+        ret.append(dados.model_dump(by_alias=formato_json))
+    return ret
 
 
 def consulta_db_mongo(nome_db: str, nome_collection: str, caminho_mongo: str = config.mongo_local):

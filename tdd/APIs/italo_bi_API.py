@@ -4,31 +4,31 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from bson import json_util
 
-from tdd import config
+
+from tdd.libs.autenticacao import autentica_token
 from tdd.scripts.carrega_arquivo_db import consulta_db_mongo, carrega_xls_mongo
+from tdd.libs.arquivos import faz_upload_arquivo
 
 app = Flask(__name__)
 CORS(app)
+app.config['UPLOAD_FOLDER'] = 'upload'
 
 
 @app.route('/carregar/arquivo', methods=['POST'])
 def carrega_xls_mongodb():
-    str_token = request.headers.get('Authorization')
-    if not str_token:
+    if not autentica_token(request.headers.get('Authorization')):
         return jsonify({'msg': 'Acesso negado'}), 403
 
-    token = str_token.split(' ')[1]
-    if token != config.token_acesso:
-        return jsonify({'msg': 'Acesso negado'}), 403
+    arquivo = request.files['arquivo']
+    if not arquivo or arquivo.filename == '':
+        return jsonify({'msg': 'Arquivo não enviado na requisição'})
 
-    body = request.json
+    nome_arquivo = faz_upload_arquivo(arquivo, app.config['UPLOAD_FOLDER'])
 
-    if 'arquivo' not in list(body.keys()) or not body['arquivo']:
-        return jsonify({'msg': 'Campo arquivo é necessário para requisição'}), 400
+    retorno = carrega_xls_mongo(nome_arquivo, 'teste_API')
 
-    retorno = carrega_xls_mongo(body['arquivo'], 'teste_API')
-
-    if 'Erro no formato do cabeçalho' in retorno.values() or 'Erro encontrado: valores da tabela' in retorno.values():
+    if ('Erro no formato do cabeçalho' in retorno.values()) or ('Erro encontrado: valores da tabela'
+                                                                in retorno.values()):
         return jsonify({'msg': 'Problema ao adicionar planilha(s)', 'relatorio': retorno}), 422
 
     return jsonify({'msg': 'Planilhas adicionadas com sucesso!', 'relatorio': retorno}), 201
@@ -36,12 +36,7 @@ def carrega_xls_mongodb():
 
 @app.route('/consultas/tabela/<tabela>', methods=['GET'])
 def consulta_db(tabela):
-    str_token = request.headers.get('Authorization')
-    if not str_token:
-        return jsonify({'msg': 'Acesso negado'}), 403
-
-    token = str_token.split(' ')[1]
-    if token != config.token_acesso:
+    if not autentica_token(request.headers.get('Authorization')):
         return jsonify({'msg': 'Acesso negado'}), 403
 
     # collection = conecta_mongo_db(config.mongo_local, config.banco, tabela)
