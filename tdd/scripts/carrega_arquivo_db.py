@@ -1,9 +1,9 @@
 import pandas as pd
-from pydantic_core import ValidationError
 
+from tdd.erros import DadosInvalidos
 from tdd.libs.conecta_db import conecta_mongo_db
 from tdd.libs.arquivos import le_arquivo_csv, le_arquivo_xls
-from tdd.dominio import campos_italo_bi
+from tdd.scripts.aux import converte_cabecalho, tratamento_typeerror
 from tdd import config
 
 
@@ -36,31 +36,7 @@ def transforma_em_inteiro_ou_zero(valor):
     return valor
 
 
-mapa_planilha_classe = {
-    'SEMI': campos_italo_bi.DadosSemi,
-    'EADC': campos_italo_bi.DadosEadc,
-    'EAD2': campos_italo_bi.DadosEad2,
-    'PRES': campos_italo_bi.DadosPres,
-    'ACUM': campos_italo_bi.DadosPorSemestre,
-    'REMA': campos_italo_bi.DadosPorSemestre,
-    'INGR': campos_italo_bi.DadosPorSemestre,
-    'CAPT': campos_italo_bi.DadosPorSemestre,
-    'EVAS': campos_italo_bi.DadosPorSemestre
-}
-
-
-def converte_cabecalho(
-        lista: list[dict], nome_planilha: str, formato_json: bool = False) -> list[dict]:
-
-    ret = []
-
-    for i in lista:
-        dados = mapa_planilha_classe[nome_planilha](**i)
-        ret.append(dados.model_dump(by_alias=formato_json))
-    return ret
-
-
-def consulta_db_mongo(nome_db: str, nome_collection: str, caminho_mongo: str = config.mongo_local):
+def consulta_db_mongo(nome_db: str, nome_collection: str, caminho_mongo: str = config.mongo_db):
     collection = conecta_mongo_db(nome_db, nome_collection, caminho_mongo)
     consulta = list(collection.find(projection={'_id': False}))
 
@@ -68,35 +44,26 @@ def consulta_db_mongo(nome_db: str, nome_collection: str, caminho_mongo: str = c
     return retorno
 
 
-def carrega_xls_mongo(nome_arquivo: str, nome_db: str, caminho_mongo: str = config.mongo_local):
-
+def carrega_xls_mongo(nome_arquivo: str, nome_db: str, caminho_mongo: str = config.mongo_db):
     nome_planilhas = le_arquivo_xls(nome_arquivo).sheet_names
     resp = {}
 
     for planilha in nome_planilhas:
         if planilha == 'Notas':
             continue
-
         dados_planilha = pd.read_excel(nome_arquivo, planilha).to_dict('records')
-
         try:
             dados_planilha_padronizados = converte_cabecalho(dados_planilha, planilha)
-        except TypeError:
-            print(f'Erro no formato do cabeçalho na planilha: {planilha}')
-            resp[planilha] = 'Erro no formato do cabeçalho'
+        except DadosInvalidos:
+            print(f'Erro de dados em braco na planilha: {planilha}')
+            resp[planilha] = 'Contém dados não preenchidos'
             continue
-        except ValidationError:
-            print(f'Erro encontrado nos valores das tabelas {planilha}')
-            resp[planilha] = 'Erro encontrado: valores da tabela'
+        except TypeError as te:
+            resp[planilha] = tratamento_typeerror[te.args[0]](planilha)
             continue
-
         collection = conecta_mongo_db(nome_db, planilha.lower(), caminho_mongo)
         collection.drop()
         collection.insert_many(dados_planilha_padronizados)
         resp[planilha] = 'Adicionada com sucesso no banco'
 
     return resp
-
-
-if __name__ == '__main__':
-    pass

@@ -47,11 +47,12 @@ def test_consulta_db_mongo():
 @pytest.mark.parametrize(
         'nome_arquivo, retorno',
         [('tests/dados_teste/teste_subir_xls.xlsx', 'Adicionada com sucesso no banco'),
-         ('tests/dados_teste/teste_subir_xls_erro_cabecalho.xlsx', 'Erro no formato do cabeçalho'),
+         ('tests/dados_teste/teste_subir_xls_erro_cabecalho.xlsx',
+          'Erro no formato do(s) cabeçalho(s)'),
          ('tests/dados_teste/teste_subir_xls_erro_dados.xlsx',
-          'Erro encontrado: valores da tabela'),
+          'Contém dados não preenchidos'),
          ('tests/dados_teste/teste_subir_xls_erro_dados2.xlsx',
-          'Erro encontrado: valores da tabela')])
+          'Contém dados não numéricos')])
 def test_carrega_xls_mongo(nome_arquivo, retorno):
 
     assert carrega_xls_mongo(nome_arquivo, 'banco_teste')['ACUM'] == retorno

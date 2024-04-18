@@ -3,7 +3,7 @@ from tdd import config
 
 
 def test_conecta_db():
-    colecao = conecta_mongo_db('banco_teste', 'semi', config.mongo_local)
+    colecao = conecta_mongo_db('banco_teste', 'semi', config.mongo_db)
     resp = list(colecao.find())
     assert len(resp) > 0
 

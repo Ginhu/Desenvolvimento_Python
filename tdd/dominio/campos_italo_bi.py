@@ -1,4 +1,7 @@
-from pydantic import BaseModel, Field, ConfigDict, RootModel
+from pydantic import BaseModel, Field, ConfigDict, RootModel, field_validator
+import math
+
+from tdd.erros import DadosInvalidos
 
 
 class ExemploInt(BaseModel):
@@ -8,6 +11,12 @@ class ExemploInt(BaseModel):
 
 class DadosExemplo(list[ExemploInt]):
     ...
+
+
+def valida_valores_vazios(cls, value):
+    if value is not None and math.isnan(value):
+        raise DadosInvalidos('Dados na planilha inválidos')
+    return value
 
 
 class DadosPorSemestre(BaseModel):
@@ -43,6 +52,8 @@ class DadosPorSemestre(BaseModel):
     s_29_2: int | None = Field(default=None, alias='29.2')
     s_30_1: int | None = Field(default=None, alias='30.1')
     s_30_2: int | None = Field(default=None, alias='30.2')
+
+    __pydantic_validator__ = field_validator("*", mode='before')(valida_valores_vazios)
 
 
 class DadosSemi(BaseModel):
@@ -273,6 +284,8 @@ class DadosSemi(BaseModel):
     s_30_2_semi_rmt_cap: int | None = Field(default=None, alias='30.2 SEMI RMT CAP')
     s_30_2_semi_rmt_vig: int | None = Field(default=None, alias='30.2 SEMI RMT VIG')
     s_30_2_semi_rmt_eva: int | None = Field(default=None, alias='30.2 SEMI RMT EVA')
+
+    __pydantic_validator__ = field_validator("*", mode='before')(valida_valores_vazios)
 
 
 class ListaDadosSemi(RootModel):
@@ -508,6 +521,8 @@ class DadosEadc(BaseModel):
     s_30_2_eadc_rmt_vig: int | None = Field(default=None, alias='30.2 EADC REM VIG')
     s_30_2_eadc_rmt_eva: int | None = Field(default=None, alias='30.2 EADC RMT EVA')
 
+    __pydantic_validator__ = field_validator("*", mode='before')(valida_valores_vazios)
+
 
 class DadosPres(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
@@ -738,6 +753,8 @@ class DadosPres(BaseModel):
     s_30_2_pres_rmt_vig: int | None = Field(default=None, alias='30.2 PRES RMT VIG')
     s_30_2_pres_rmt_eva: int | None = Field(default=None, alias='30.2 PRES RMT EVA')
 
+    __pydantic_validator__ = field_validator("*", mode='before')(valida_valores_vazios)
+
 
 class DadosEad2(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
@@ -817,6 +834,8 @@ class DadosEad2(BaseModel):
     s_30_2_ead2_oin_cap: int | None = Field(default=None, alias='30.2 EAD2 OIN CAP')
     s_30_2_ead2_oin_vig: int | None = Field(default=None, alias='30.2 EAD2 OIN VIG')
     s_30_2_ead2_oin_eva: int | None = Field(default=None, alias='30.2 EAD2 OIN EVA')
+
+    __pydantic_validator__ = field_validator("*", mode='before')(valida_valores_vazios)
 
 
 # dici = {'Dias': -100, '16.2': 0}

@@ -19,19 +19,20 @@ def carrega_xls_mongodb():
     if not autentica_token(request.headers.get('Authorization')):
         return jsonify({'msg': 'Acesso negado'}), 403
 
-    arquivo = request.files['arquivo']
-    if not arquivo or arquivo.filename == '':
-        return jsonify({'msg': 'Arquivo não enviado na requisição'})
-
+    if not request.files or 'planilha' not in request.files:
+        return jsonify({'msg': 'Arquivo não enviado na requisição'}), 400
+    print(request.data)
+    arquivo = request.files['planilha']
     nome_arquivo = faz_upload_arquivo(arquivo, app.config['UPLOAD_FOLDER'])
-
     retorno = carrega_xls_mongo(nome_arquivo, 'teste_API')
 
-    if ('Erro no formato do cabeçalho' in retorno.values()) or ('Erro encontrado: valores da tabela'
-                                                                in retorno.values()):
-        return jsonify({'msg': 'Problema ao adicionar planilha(s)', 'relatorio': retorno}), 422
+    erros_msg = ['Contém dados não preenchidos', 'Contém dados não numéricos',
+                 'Erro no formato do(s) cabeçalho(s)']
 
-    return jsonify({'msg': 'Planilhas adicionadas com sucesso!', 'relatorio': retorno}), 201
+    if any(msg in erros_msg for msg in retorno.values()):
+        return jsonify({'msg': 'Problema ao adicionar planilha(s)', 'status': retorno}), 422
+
+    return jsonify({'msg': 'Planilhas adicionadas com sucesso!', 'status': retorno}), 201
 
 
 @app.route('/consultas/tabela/<tabela>', methods=['GET'])
@@ -39,9 +40,7 @@ def consulta_db(tabela):
     if not autentica_token(request.headers.get('Authorization')):
         return jsonify({'msg': 'Acesso negado'}), 403
 
-    # collection = conecta_mongo_db(config.mongo_local, config.banco, tabela)
-    # consulta = list(collection.find(projection={'_id': False}))
-    consulta = consulta_db_mongo('banco_teste', tabela)
+    consulta = consulta_db_mongo('teste_API', tabela)
 
     if not consulta:
         return jsonify({'msg': 'Tabela não encontrada'}), 400
