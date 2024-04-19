@@ -837,13 +837,3 @@ class DadosEad2(BaseModel):
 
     __pydantic_validator__ = field_validator("*", mode='before')(valida_valores_vazios)
 
-
-# dici = {'Dias': -100, '16.2': 0}
-# dados = DadosPorSemestre(**dici)
-# print(dados.model_dump())
-# print(dados.model_dump(by_alias=True))
-# dici = {'Dias': -100, '18.2 SEMI CAL CAP': 1}
-# dici2 = {'dias': -100, 's_18_2_semi_cal_cap': 1}
-# dados = DadosSemi(**dici)
-# dados2 = DadosSemi(**dici2)
-# print(dados2.model_dump_json(by_alias=True))
