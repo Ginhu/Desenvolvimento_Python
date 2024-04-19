@@ -18,3 +18,7 @@ class ImpossivelVerificarTimeout(TddErro):
 
 class JwtExpirado(TddErro):
     ...
+
+
+class DadosInvalidos(TddErro):
+    ...

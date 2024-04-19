@@ -1,7 +1,10 @@
+import pytest
+from tdd.erros import NaoEncontrado
 from tdd.libs.arquivos import (gera_novo_arquivo,
                                gera_novo_nome_arquivo,
                                le_arquivo_csv,
-                               le_arquivo_xls)
+                               le_arquivo_xls,
+                               faz_upload_arquivo)
 
 
 def test_le_arquivo_csv():
@@ -10,6 +13,13 @@ def test_le_arquivo_csv():
     conteudo_arquivo = le_arquivo_csv('tests/dados_teste/teste_le_arquivo.csv')
 
     assert retorno_esperado == conteudo_arquivo
+
+
+def test_le_arquivo_csv_exception():
+    nome_arquivo = 'tests/dados_teste/teste_le_arquivo_erro.csv'
+    with pytest.raises(NaoEncontrado) as exinfo:
+        le_arquivo_csv(nome_arquivo)
+    assert str(exinfo.value) == f'Arquivo não encontrado: {nome_arquivo}'
 
 
 def test_gera_novo_nome_arquivo():
@@ -34,6 +44,26 @@ def test_gera_novo_arquivo():
 
 
 def test_le_arquivo_xls():
-    conteudo_xls = le_arquivo_xls('tests/dados_teste/Series Acumuladas1.xlsx')
+    conteudo_xls = le_arquivo_xls('tests/dados_teste/Series Acumuladas.xlsx')
     assert conteudo_xls.sheet_names == ['ACUM', 'REMA', 'INGR', 'CAPT', 'EVAS', 'SEMI', 'EADC',
-                                        'EAD2', 'PRES', 'TESTE', 'Notas']
+                                        'EAD2', 'PRES', 'Notas']
+
+
+def test_le_arquivo_xls_exception():
+    nome_arquivo = 'tests/dados_teste/Series Acumuladas_erro.xlsx'
+    with pytest.raises(NaoEncontrado) as exinfo:
+        le_arquivo_xls(nome_arquivo)
+    assert str(exinfo.value) == f'Arquivo não encontrado: {nome_arquivo}'
+
+
+# def test_salva_arquivo_upload():
+#     class Arquivo():
+#         def save():
+#             return True
+
+#         def filename():
+#             return 'Series Acumuladas.xlsx'
+#     faz_upload_arquivo(Arquivo, 'upload')
+#     assert le_arquivo_xls(
+#         'upload/Series Acumuladas.xlsx').sheet_names == ['ACUM', 'REMA', 'INGR', 'CAPT', 'EVAS',
+#                                                          'SEMI', 'EADC', 'EAD2', 'PRES', 'Notas']

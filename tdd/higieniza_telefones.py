@@ -27,6 +27,6 @@ def higieniza_telefone(nome_arquivo: str):
     return gera_novo_arquivo(nome_arquivo, dados_arquivo)
 
 
-if __name__ == '__main__':
-    nome_arquivo = 'dados/Series-Acumuladas-SEMI.csv'
-    higieniza_telefone(nome_arquivo)
+# if __name__ == '__main__':
+#     nome_arquivo = 'dados/Series-Acumuladas-SEMI.csv'
+#     higieniza_telefone(nome_arquivo)
